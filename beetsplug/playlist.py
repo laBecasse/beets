@@ -76,11 +76,26 @@ class PlaylistQuery(beets.dbcore.NamedQuery):
             # Playlist is empty
             return "0", ()
         clause = "path IN ({})".format(", ".join("?" for path in self.paths))
-        return clause, (beets.library.BLOB_TYPE(p) for p in self.paths)
+        return clause, [beets.library.BLOB_TYPE(p) for p in self.paths]
 
     def match(self, item):
         return item.path in self.paths
 
+    def default_sort(self):
+        return PlaylistSort(self.paths)
+        
+class PlaylistSort(beets.dbcore.Sort):
+
+    def __init__(self, paths):
+        self.paths = paths
+        
+    def sort(self, items):
+        def key(item):
+            return self.paths.index(item.path)
+        return sorted(items, key=key)
+
+    def is_slow(self) -> bool:
+        return True
 
 class PlaylistPlugin(beets.plugins.BeetsPlugin):
     item_queries = {"playlist": PlaylistQuery}

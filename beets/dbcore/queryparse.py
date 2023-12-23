@@ -268,11 +268,11 @@ def parse_sorted_query(
                 subquery_parts.append(last_subquery_part)
             # Parse the subquery in to a single AndQuery
             # TODO: Avoid needlessly wrapping AndQueries containing 1 subquery?
-            query_parts.append(
-                query_from_strings(
-                    query.AndQuery, model_cls, prefixes, subquery_parts
-                )
+            andquery = query_from_strings(
+                query.AndQuery, model_cls, prefixes, subquery_parts
             )
+
+            query_parts.append(andquery_to_append if len(andquery.subqueries) > 1 else andquery.subqueries[0])
             del subquery_parts[:]
         else:
             # Sort parts (1) end in + or -, (2) don't have a field, and

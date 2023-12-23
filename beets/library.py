@@ -1648,6 +1648,8 @@ class Library(dbcore.Database):
         # provided sort.
         if parsed_sort and not isinstance(parsed_sort, dbcore.query.NullSort):
             sort = parsed_sort
+        elif not isinstance(query.default_sort(), dbcore.query.NullSort):
+            sort = query.default_sort()
 
         return super()._fetch(model_cls, query, sort)
 

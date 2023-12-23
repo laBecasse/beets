@@ -25,6 +25,7 @@ from .query import (
     NamedQuery,
     OrQuery,
     Query,
+    Sort,
 )
 from .queryparse import (
     parse_sorted_query,
